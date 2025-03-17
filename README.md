@@ -1,6 +1,6 @@
 # Browser tab Component
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.0.4.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 19.1.1.
 
 I greatly appreciate your support and hope you find the component useful. Feel free to check it out and provide any additional feedback you may have. 🚀
 
@@ -91,3 +91,7 @@ This is an Angular component that provides a tabbed interface for your web appli
 - `tabSelected`: Emits when a tab is selected.
 - `addTabButtonClick`: Emits when clicking the add tab button.
 - ...
+
+
+### Original Project
+ - [RickyCott - browser-tabs-component](https://github.com/RockyCott/browser-tabs-component)
