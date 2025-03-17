@@ -24,7 +24,6 @@ import { TabConfig } from '../components/tabs/models/tab-config';
     MatCardModule,
     MatButtonModule,
     TabsFullComponent,
-    TabComponent,
     TestComponent,
   ],
 })
@@ -35,16 +34,12 @@ export class ExampleComponent {
   newTabTemplate: any;
   @ViewChildren(TestComponent)
   protected tabs: QueryList<TestComponent>;
-  @Input()
-  public tabIndicator: boolean = false;
-  @Input()
-  public isScrollable: boolean = true;
-  @Input()
-  public isDragDrop: boolean = true;
 
-  @Input()
-  public staticTabs: any[] = [
-  ];
+  @Input() public tabIndicator: boolean = false;
+  @Input() public isScrollable: boolean = true;
+  @Input() public isDragDrop: boolean = true;
+  @Input()  public isNameEditable: boolean = false;
+
 
   constructor(private cdr: ChangeDetectorRef) {}
 
@@ -52,13 +47,6 @@ export class ExampleComponent {
     return 'dy-' + Math.random().toString(36).substring(10);
   }
 
-  /**
-   * @description
-   * Method que se encarga de crear una nueva pestaña
-   * @param tabConfig - Configuración de la pestaña
-   * @param template - Template de la pestaña
-   * @param data - Data de la pestaña
-   */
   protected newDynamicTab(): void {
     const title = this.randomTitle;
     const tabConfig: TabConfig = {
@@ -75,9 +63,8 @@ export class ExampleComponent {
   }
 
   closeTabSelected(tab: TabComponent) {
-      this.tabsFullComponent.closeTab(tab);
-      this.cdr.detectChanges();
-
+    this.tabsFullComponent.closeTab(tab);
+    this.cdr.detectChanges();
   }
 
   tabSelected(tab: TabComponent) {
