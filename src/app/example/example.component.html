@@ -7,11 +7,14 @@
     (tabSelected)="tabSelected($event)"
     (closeTabButton)="closeTabSelected($event)"
     (addTabButtonClick)="newDynamicTab()"
-    [tabIndicator]="true"
     [tabIndicatorPosition]="'top'"
-    [isNameEditable]="true"
     [hasCloseableEmit]="true"
     [allCloseable]="true"
+    [tabIndicator]="tabIndicator"
+    [isNameEditable]="isNameEditable"
+    [isScrollable]="isScrollable"
+    [isDraggable]="isDragDrop"
+    [darkMode]="false"
   >
   </app-tabs-full>
 </section>
