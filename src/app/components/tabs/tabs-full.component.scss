@@ -1,0 +1,509 @@
+/** * THEME LIGHT */
+$main-bg-color-light: rgba(255, 255, 255);
+/* tabs colors */
+$tabs-header-bg-color: transparent; //rgb(231, 234, 236);
+$tabs-bg-color: $tabs-header-bg-color;
+$tabs-selected-bg-color: $main-bg-color-light;
+$tabs-hover-bg-color: rgb(240, 243, 245);
+$tabs-text-color: rgb(88, 92, 95);
+$tabs-hover-text-color: rgb(88, 92, 95);
+$tabs-selected-text-color: rgb(47, 48, 49);
+$tabs-height: 2.2rem;
+/** * THEME DARK */
+$main-bg-color-dark: rgb(49, 53, 57);
+/* tabs colors */
+$dark-tabs-header-bg-color: rgb(31, 32, 35);
+$dark-tabs-bg-color: $main-bg-color-dark;
+$dark-tabs-selected-bg-color: $dark-tabs-header-bg-color;
+$dark-tabs-hover-bg-color: #25282b;
+$dark-tabs-text-color: rgb(134, 136, 138);
+$dark-tabs-hover-text-color: rgb(255, 255, 255);
+$dark-tabs-selected-text-color: rgb(221, 226, 231);
+
+.sd-tabs {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  margin: 0;
+  background: #e5e5e5;
+  padding-top: 0.075rem;
+  position: relative;
+  background-color: $tabs-bg-color;
+}
+.sd-tabs.dark {
+  background-color: $dark-tabs-bg-color;
+}
+.sd-tabs > .sd-tab-label {
+  background-color: $tabs-bg-color;
+  padding: 3px 5px 5px 10px;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  width: 100%;
+  border-radius: 5px 5px 0 0;
+  position: relative;
+  z-index: 2;
+  max-height: $tabs-height;
+  /* transition: background-color ease .2s, box-shadow ease .2s;
+  */
+  flex: 1;
+  outline: none;
+}
+.sd-tabs.drag-list > .sd-tab-label {
+  cursor: grab !important;
+}
+.sd-tabs:not(.drag-list) > .sd-tab-label {
+  cursor: pointer !important;
+}
+.sd-tabs.dark > .sd-tab-label {
+  background-color: $dark-tabs-bg-color;
+}
+.sd-tabs > .sd-tab-label:hover {
+  background-color: $tabs-hover-bg-color;
+  color: $tabs-hover-text-color;
+  z-index: 3;
+}
+.sd-tabs.dark > .sd-tab-label:hover {
+  background-color: $dark-tabs-hover-bg-color;
+  color: $dark-tabs-hover-text-color;
+}
+.sd-tabs > .sd-tab-label.active {
+  z-index: 4;
+}
+.sd-tabs > .sd-tab-label::after,
+.sd-tabs > .sd-tab-label::before {
+  content: " ";
+  pointer-events: none;
+  position: absolute;
+  display: block;
+  height: 80%;
+  width: 100%;
+  bottom: 0px;
+  z-index: -1;
+  opacity: 0;
+  visibility: hidden;
+}
+.sd-tabs > .sd-tab-label:not(.active):not(:hover) {
+  box-shadow: -8px 0px 0 -7px rgba(0, 0, 0, 0.25);
+  color: $tabs-text-color;
+}
+.sd-tabs.dark > .sd-tab-label:not(.active):not(:hover) {
+  color: $dark-tabs-text-color;
+}
+.sd-tabs > .sd-tab-label.active + .sd-tab-label.active,
+.sd-tabs > .sd-tab-label:hover + .sd-tab-label:not(.active) {
+  box-shadow: -8px 0px 0 -7px rgba(0, 0, 0, 0);
+}
+.sd-tabs > .sd-tab-label:hover::before,
+.sd-tabs > .sd-tab-label.active::before {
+  left: -100%;
+  border-radius: 0 0 10px 0;
+  opacity: 1;
+  /* transition: opacity ease .2s, box-shadow ease .2s;
+  */
+}
+.sd-tabs > .sd-tab-label.active::before {
+  box-shadow: 14px 0.25em 0 -4px $tabs-selected-bg-color;
+}
+.sd-tabs.dark > .sd-tab-label.active::before {
+  box-shadow: 14px 0.25em 0 -4px $dark-tabs-selected-bg-color;
+}
+.sd-tabs > .sd-tab-label:not(.last-tab):hover::after,
+.sd-tabs > .sd-tab-label.active:not(.last-tab)::after {
+  right: -100%;
+  border-radius: 0 0 0 10px;
+  opacity: 1;
+  /* transition: opacity ease .2s, box-shadow ease .2s;
+  */
+}
+
+.sd-tabs > .sd-tab-label.last-tab:hover::after,
+.sd-tabs > .sd-tab-label.active.last-tab::after {
+  right: 0% !important;
+  /* transition: opacity ease .2s, box-shadow ease .2s;
+  */
+}
+.sd-tabs > .sd-tab-label.active::after {
+  box-shadow: -14px 0.25em 0 -4px $tabs-selected-bg-color;
+}
+.sd-tabs.dark > .sd-tab-label.active::after {
+  box-shadow: -14px 0.25em 0 -4px $dark-tabs-selected-bg-color;
+}
+.sd-tabs > .sd-tab-label.active:hover,
+.sd-tabs > .sd-tab-label.active {
+  background-color: $tabs-selected-bg-color;
+  color: $tabs-selected-text-color;
+  z-index: 4;
+}
+.sd-tabs.dark > .sd-tab-label.active:hover,
+.sd-tabs.dark > .sd-tab-label.active {
+  background-color: $dark-tabs-selected-bg-color;
+  color: $dark-tabs-selected-text-color;
+  z-index: 4;
+}
+.sd-tabs > .sd-tab-label:not(.active):hover::before {
+  box-shadow: 14px 0.25em 0 -4px $tabs-hover-bg-color;
+  opacity: 1;
+  /* transition: all .2s;
+  */
+}
+.sd-tabs.dark > .sd-tab-label:not(.active):hover::before {
+  box-shadow: 14px 0.25em 0 -4px $dark-tabs-hover-bg-color;
+}
+.sd-tabs > .sd-tab-label:not(.active):hover::after {
+  box-shadow: -14px 0.25em 0 -4px $tabs-hover-bg-color;
+  /* transition: all .2s;
+  */
+}
+.sd-tabs.dark > .sd-tab-label:not(.active):hover::after {
+  box-shadow: -14px 0.25em 0 -4px $dark-tabs-hover-bg-color;
+}
+:root .sd-tabs > .sd-tab-label:first-of-type {
+  box-shadow: -8px 0px 0 -7px rgba(0, 0, 0, 0);
+}
+.sd-tabs > .break {
+  background-color: aqua;
+  flex-basis: 100%;
+}
+.sd-tabs > .sd-tab-label .sd-tab-desc {
+  display: block;
+  margin: 7px 5px 5px 2px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  position: relative;
+  flex: 1 1 0%;
+  font-size: 14px !important;
+  font-weight: 500;
+}
+.sd-tabs > .sd-tab-label .sd-tab-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 2px;
+  width: 16px;
+  padding: 2px 3px;
+  ::ng-deep mat-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px !important;
+  }
+}
+.sd-tabs > .sd-tab-label .sd-tab-icon:not(.sd-tab-close) {
+  width: 20px;
+}
+.sd-tabs > .sd-tab-label[icon-only] .sd-tab-icon:not(.sd-tab-close) {
+  width: 24px;
+  margin: 0 auto;
+}
+.sd-tabs > .sd-tab-label .sd-tab-close:hover {
+  background-color: #4c4c4c33;
+}
+.sd-tabs > .sd-tab-label .sd-tab-close {
+  margin-left: auto;
+  width: 16px;
+  height: 16px;
+}
+@media (min-width: 100px) {
+  .sd-tabs {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .sd-tab-label {
+    max-width: 150px !important;
+    width: 150px !important;
+    border-radius: 10px 10px 0 0;
+  }
+  .sd-tabs.isScrollable > .sd-tab-label {
+    min-width: 150px !important;
+  }
+  .sd-tabs > .sd-tab-label.active {
+    min-width: 150px !important;
+    transition: min-width 0.2s ease-in-out;
+  }
+
+
+  .item {
+    max-width: 150px !important;
+  }
+  .sd-tabs > .sd-tab-label::after,
+  .sd-tabs > .sd-tab-label::before {
+    visibility: visible;
+  }
+  .sd-tabs > .sd-tab-label:first-of-type {
+    margin-left: 14px;
+  }
+}
+
+.sd-tab-close {
+  cursor: pointer !important;
+  border-radius: 10% !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.drag-list {
+  max-width: 100%;
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+}
+
+.cdk-drag-preview {
+  box-sizing: border-box;
+  // box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+  //   0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+  padding: 3px 5px 5px 10px;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  width: 100%;
+  border-radius: 5px 5px 0 0;
+  position: relative;
+  z-index: 2;
+  max-height: $tabs-height;
+  flex: 1;
+  outline: none;
+  background-color: $tabs-selected-bg-color;
+  color: $tabs-selected-text-color;
+  border-top: 2px solid var(--main-color);
+  .sd-tab-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    width: 16px;
+    ::ng-deep mat-icon {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 16px !important;
+    }
+    margin-right: 2px;
+  }
+  .sd-tab-desc {
+    display: block;
+    margin: 7px 5px 5px 2px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    position: relative;
+    flex: 1 1 0%;
+    font-size: 14px !important;
+    font-weight: 500;
+  }
+}
+
+.cdk-drag-placeholder {
+  opacity: 0;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.drag-list.cdk-drop-list-dragging .sd-tab-label:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.add-tab-button-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 4px;
+  margin-right: 4px;
+  background-color: $tabs-bg-color;
+}
+/* Estilo para el botón de añadir pestaña */
+.add-tab-button {
+  background-color: transparent; /* Color de fondo */
+  color: $tabs-text-color; /* Color del icono */
+  border: none;
+  font-size: 24px;
+  height: 100%;
+  width: 2.2rem;
+  font-weight: 500;
+  border-radius: 10%;
+  cursor: pointer;
+  box-shadow: -8px 0px 0 -7px rgba(0, 0, 0, 0);
+  /* Estilo para el hover (efecto circular) */
+  &:hover {
+    background-color: #4c4c4c33;
+    color: $tabs-hover-text-color;
+  }
+}
+
+.list-with-scroll {
+  display: flex;
+  background-color: $tabs-bg-color;
+}
+
+.list {
+  width: 100%;
+  display: flex;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  overflow-x: scroll;
+}
+
+.list::-webkit-scrollbar {
+  display: none;
+}
+
+.item {
+  min-width: 150px !important;
+}
+
+.scroll-button {
+  background-color: transparent;
+  color: $tabs-text-color;
+  border: none;
+  font-size: 22px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: -8px 0px 0 -7px rgba(0, 0, 0, 0);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: auto;
+  height: 100%;
+  &:hover {
+    background-color: #4c4c4c33;
+    border-radius: 10%;
+    color: $tabs-hover-text-color;
+  }
+  ::ng-deep mat-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+.scroll-button.disable {
+  background-color: transparent !important;
+  color: rgba(0, 0, 0, 0.26) !important;
+  border: none !important;
+  cursor: default !important;
+}
+
+.scroll-button-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+}
+
+.margin-left-4 {
+  margin-left: 4px;
+}
+
+.margin-left-2 {
+  margin-left: 2px;
+}
+
+.disable,
+.disable:hover {
+  background-color: rgba(0, 0, 0, 0.12);
+  color: rgba(0, 0, 0, 0.26);
+  border: none;
+}
+
+#scroll-left {
+  order: -1;
+}
+
+#scroll-right {
+  order: 12;
+}
+
+.tab-bar-bottom-indicator {
+  border-bottom: 2px solid var(--main-color);
+}
+
+.tab-bar-top-indicator {
+  border-top: 2px solid var(--main-color);
+}
+
+.sd-tab-label:not(.active):hover {
+  border-top: 2px solid var(--main-color);
+}
+
+
+
+.sd-tab-label.disabled {
+  background-color: #b7b7b7 !important;
+}
+
+.outline-none:focus {
+  outline: none;
+}
+
+.icon-with-tooltip:hover {
+  cursor: pointer !important;
+}
+
+:host {
+  display: block;
+
+  &.full-width .sd-tabs {
+    justify-content: space-around;
+  }
+
+  ::ng-deep app-tab {
+    flex: 1;
+    -ms-flex: 1 1 auto;
+    overflow: auto;
+    display: none;
+    &.content-active {
+      display: block;
+    }
+  }
+
+  .sd-tabs {
+    display: flex;
+    flex-direction: row;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+
+    .sd-tab-label {
+      margin-bottom: -1px;
+      text-align: center;
+      position: relative;
+
+      &.active div::before {
+        display: block;
+      }
+
+      div {
+        display: flex;
+        position: relative;
+        text-decoration: none;
+
+        &::before {
+          position: absolute;
+          content: "";
+          width: 100%;
+          border-radius: 3px;
+          bottom: -2px;
+          left: 0;
+        }
+
+        mat-icon {
+          vertical-align: middle;
+        }
+
+        mat-icon + span {
+          margin-left: 0.5rem;
+          margin-right: 0.5rem;
+        }
+      }
+    }
+  }
+}
+
+.text-color {
+  color: $tabs-text-color;
+}

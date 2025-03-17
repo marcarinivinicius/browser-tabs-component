@@ -1,0 +1,227 @@
+<!-- TABSFULLCOMPONENT VIEW TEMPLATE -->
+
+<!-- SCROLLABLE TABS -->
+<div class="list-with-scroll outline-none" *ngIf="isScrollable">
+  <ul
+    class="list sd-tabs outline-none isScrollable"
+    [class.dark]="darkMode"
+    [class.drag-list]="isDraggable && tabs.length > 1"
+    (keydown)="handleTabKey($event)"
+    cdkDropList
+    [cdkDropListDisabled]="dragDropDisabled"
+    cdkDropListOrientation="horizontal"
+    (cdkDropListDropped)="drop($event)"
+    scrollableContainer
+    #scrollable="scrollableContainer"
+    id="tabContainer"
+    [scrollUnit]="scrollUnit"
+  >
+    <!-- nav tab headers are generated here -->
+    <li
+      *ngFor="let tab of tabs"
+      class="sd-tab-label item"
+      [class.active]="tab.active"
+      [class.disabled]="tab.disabled"
+      [class.last-tab]="tab.isLast"
+      [attr.tabindex]="tab.disabled ? -1 : 0"
+      [attr.data-tab-id]="tab.index"
+      [style.border-top]="
+        tabIndicator && tab.active && tabIndicatorPosition === 'top'
+          ? '2px solid ' + tabIndicatorColor
+          : null
+      "
+      [style.border-bottom]="
+        tabIndicator && tab.active && tabIndicatorPosition === 'bottom'
+          ? '2px solid ' + tabIndicatorColor
+          : null
+      "
+      (click)="selectTab(tab)"
+      [title]="tab.tabTitle"
+      cdkDrag
+      cdkDragBoundary=".sd-tabs"
+      id="tab-{{ tab.index }}"
+      [cdkDragDisabled]="!isDraggable || tab.disabled || tabs.length <= 1"
+      cdkDragLockAxis="x"
+      cdkDragHandle
+      (cdkDragStarted)="selectTab(tab)"
+      (cdkDragDropped)="dragSelectTab(tab)"
+    >
+      <ng-container
+        *ngTemplateOutlet="tabHeaderTemplate; context: { tab: tab }"
+      ></ng-container>
+    </li>
+    <ng-container
+      *ngTemplateOutlet="
+        addButtonTemplate;
+        context: {
+          showAddTabButton: showAddTabButton && !scrollable.isOverflow
+        }
+      "
+    ></ng-container>
+  </ul>
+
+  <!-- LEFT BUTTON -->
+  <div
+    class="scroll-button-container margin-left-4"
+    id="scroll-left"
+    *ngIf="scrollable.isOverflow"
+  >
+    <button
+      type="button"
+      class="scroll-button"
+      [class.disable]="!scrollable.canScrollStart"
+      (click)="scrollable.scrollSmooth(-1)"
+    >
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+  </div>
+
+  <!-- RIGHT BUTTON -->
+  <div
+    class="scroll-button-container margin-left-2"
+    *ngIf="scrollable.isOverflow"
+  >
+    <button
+      type="button"
+      class="scroll-button"
+      *ngIf="scrollable.isOverflow"
+      [class.disable]="!scrollable.canScrollEnd"
+      (click)="scrollable.scrollSmooth(1)"
+    >
+      <!-- &#8680; -->
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+  </div>
+
+  <ng-container
+    *ngTemplateOutlet="
+      addButtonTemplate;
+      context: {
+        showAddTabButton: showAddTabButton && scrollable.isOverflow
+      }
+    "
+  ></ng-container>
+</div>
+
+<!-- TABS SIN SCROLLABLE -->
+<ul
+  *ngIf="!isScrollable"
+  class="sd-tabs outline-none"
+  [ngClass]="{ dark: darkMode }"
+  (keydown)="handleTabKey($event)"
+  cdkDropList
+  [cdkDropListDisabled]="dragDropDisabled"
+  cdkDropListOrientation="horizontal"
+  (cdkDropListDropped)="drop($event)"
+  id="tabContainer"
+>
+  <!-- nav NAV TAB HEADERS ARE GENERATED HERE -->
+  <li
+    *ngFor="let tab of tabs"
+    class="sd-tab-label"
+    [class.active]="tab.active"
+    [class.disabled]="tab.disabled"
+    [class.first-tab]="tab.isFirst"
+    [class.last-tab]="tab.isLast"
+    [class.sd-tab-label-disabled]="tab.disabled"
+    [attr.tabindex]="tab.disabled ? -1 : 0"
+    [attr.data-tab-id]="tab.index"
+    id="tab-{{ tab.index }}"
+    [style.border-top]="
+      tabIndicator && tab.active && tabIndicatorPosition === 'top'
+        ? '2px solid ' + tabIndicatorColor
+        : null
+    "
+    [style.border-bottom]="
+      tabIndicator && tab.active && tabIndicatorPosition === 'bottom'
+        ? '2px solid ' + tabIndicatorColor
+        : null
+    "
+    [title]="tab.tabTitle"
+    cdkDrag
+    cdkDragBoundary=".sd-tabs"
+    [cdkDragDisabled]="!isDraggable || tab.disabled || tabs.length <= 1"
+    cdkDragLockAxis="x"
+    cdkDragHandle
+    (cdkDragStarted)="selectTab(tab)"
+    (cdkDragDropped)="dragSelectTab(tab)"
+    (click)="selectTab(tab)"
+  >
+    <ng-container
+      *ngTemplateOutlet="tabHeaderTemplate; context: { tab: tab }"
+    ></ng-container>
+  </li>
+  <ng-container
+    *ngTemplateOutlet="
+      addButtonTemplate;
+      context: { showAddTabButton: showAddTabButton }
+    "
+  ></ng-container>
+</ul>
+<ng-content select="app-tab"></ng-content>
+<ng-template dynamic-tabs #dynamicContainer></ng-template>
+
+<!-- Templates -->
+
+<!-- Tab Content Template -->
+<ng-template #tabHeaderTemplate let-tab="tab">
+  <!-- Icon -->
+  <div
+    class="sd-tab-icon"
+    *ngIf="tab.icon || tab.status !== 'default'"
+    [title]="tab.icon ? tab.iconTooltipText : null"
+    (click)="clickOnIcon(tab)"
+  >
+    <mat-icon
+      *ngIf="tab.status === 'default'"
+      class="center-icon"
+      [style.color]="tab.iconColor"
+      >{{ tab.icon }}</mat-icon
+    >
+    <mat-icon
+      *ngIf="tab.status !== 'default'"
+      class="center-icon"
+      [class.error-color]="tab.status === 'error'"
+      [class.warning-color]="tab.status === 'warning'"
+      >{{ tab.icon || 'error' }}</mat-icon
+    >
+  </div>
+  <!-- Title -->
+  <div *ngIf="!isNameEditable" class="sd-tab-desc text-color">
+    {{ tab.tabTitle }}
+  </div>
+  <div
+    *ngIf="isNameEditable && !tab.isNameEditing"
+    class="sd-tab-desc text-color"
+    (dblclick)="startEditingTabName(tab)"
+  >
+    {{ tab.tabTitle }}
+  </div>
+  <input
+    *ngIf="isNameEditable && tab.isNameEditing"
+    class="sd-tab-desc outline-none text-color"
+    [(ngModel)]="tab.editName"
+    #tabTitleInput
+    id="tabTitleInput"
+    (blur)="stopEditingTabName(tab, tabTitleInput)"
+    (keyup.enter)="stopEditingTabName(tab, tabTitleInput)"
+  />
+  <div
+    *ngIf="allCloseable && tab.closeable && !tab.disabled"
+    class="sd-tab-icon sd-tab-close"
+    (click)="closeTab(tab, true)"
+    draggable="false"
+    title="Close tab"
+  >
+    x
+  </div>
+</ng-template>
+
+<!-- ADD BUTTON TEMPLATE -->
+<ng-template #addButtonTemplate let-showAddTabButton="showAddTabButton">
+  <div class="add-tab-button-container" *ngIf="showAddTabButton">
+    <button class="add-tab-button" type="button" (click)="addTabButtonClicked()">
+      +
+    </button>
+  </div>
+</ng-template>
