@@ -32,14 +32,9 @@ export class ExampleComponent {
   tabsFullComponent: TabsFullComponent;
   @ViewChild('newTab')
   newTabTemplate: any;
+  
   @ViewChildren(TestComponent)
   protected tabs: QueryList<TestComponent>;
-
-  @Input() public tabIndicator: boolean = false;
-  @Input() public isScrollable: boolean = true;
-  @Input() public isDragDrop: boolean = true;
-  @Input()  public isNameEditable: boolean = false;
-
 
   constructor(private cdr: ChangeDetectorRef) {}
 
