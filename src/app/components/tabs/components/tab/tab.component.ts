@@ -20,6 +20,8 @@ import {NgIf, NgTemplateOutlet} from "@angular/common";
   standalone: true
 })
 export class TabComponent {
+  @Input() componentName!: string;
+
   /**
    * The tab content
    */

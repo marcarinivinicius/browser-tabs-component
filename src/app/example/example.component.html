@@ -1,8 +1,12 @@
+<button (click)="newDynamicTab('TestComponent')"> Teste Componente </button>
+<button (click)="newDynamicTab('Test1Component')"> Teste Componente 1</button>
+
+
 <section class="gris-background">
   <app-tabs-full
     (tabSelected)="tabSelected($event)"
     (closeTabButton)="closeTabSelected($event)"
-    (addTabButtonClick)="newDynamicTab()"
+    (addTabButtonClick)="newDynamicTab('TestComponent')"
     [tabIndicatorPosition]="'top'"
     [hasCloseableEmit]="true"
     [allCloseable]="true"

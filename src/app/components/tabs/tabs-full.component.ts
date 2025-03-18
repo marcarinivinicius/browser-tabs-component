@@ -10,17 +10,19 @@ import {
   Output,
   QueryList,
   TemplateRef,
-  ViewChild,
+  ViewChild, ViewContainerRef,
 } from '@angular/core';
-import { TabComponent } from './components/tab/tab.component';
-import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
-import { DynamicTabsDirective } from './directives/dynamic-tabs.directive';
-import { ScrollableContainerDirective } from './directives/scrollable-container.directive';
-import { ActivatedRoute } from '@angular/router';
-import { Subject, startWith, switchMap, takeUntil, of } from 'rxjs';
-import { FormsModule } from '@angular/forms';
-import { MatIconModule } from '@angular/material/icon';
-import { CommonModule, NgIf, NgTemplateOutlet } from '@angular/common';
+import {TabComponent} from './components/tab/tab.component';
+import {CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray} from '@angular/cdk/drag-drop';
+import {DynamicTabsDirective} from './directives/dynamic-tabs.directive';
+import {ScrollableContainerDirective} from './directives/scrollable-container.directive';
+import {ActivatedRoute} from '@angular/router';
+import {Subject, startWith, switchMap, takeUntil, of} from 'rxjs';
+import {FormsModule} from '@angular/forms';
+import {MatIconModule} from '@angular/material/icon';
+import {CommonModule, NgIf, NgTemplateOutlet} from '@angular/common';
+import {DynamicComponentLoaderService} from "./services/dynamic-component-loader.service";
+import {TabConfig} from "./models/tab-config";
 
 @Component({
   selector: 'app-tabs-full',
@@ -64,15 +66,17 @@ export class TabsFullComponent implements AfterViewInit, OnDestroy {
   @Output() iconClick = new EventEmitter<TabComponent>();
 
   @ViewChild(DynamicTabsDirective, { static: false }) private dynamicTabPlaceholder!: DynamicTabsDirective;
+  @ViewChild('dynamicContainer', { read: ViewContainerRef, static: true }) private dynamicContainer!: ViewContainerRef;
+
   @ViewChild('scrollable') private scrollable!: ScrollableContainerDirective;
 
   @HostBinding('class.full-width') fullWidth = false;
 
   private destroy$ = new Subject<void>();
-  private doubleClickTimer: any;
   private cloneDynamicInstance: TabComponent[] = [];
 
-  constructor(private cdr: ChangeDetectorRef, private route: ActivatedRoute) {}
+  constructor(private cdr: ChangeDetectorRef, private route: ActivatedRoute, private dynamicLoader: DynamicComponentLoaderService) {
+  }
 
   ngOnDestroy(): void {
     this.destroy$.next();
@@ -89,9 +93,20 @@ export class TabsFullComponent implements AfterViewInit, OnDestroy {
 
   selectTab(selectedTab: TabComponent): void {
     if (!selectedTab || selectedTab.active || selectedTab.disabled) return;
-    this.tabs.forEach((tab) => (tab.active = tab === selectedTab));
+
+    this.tabs.forEach((tab) => (tab.active = false));
+
+    selectedTab.active = true;
     this.tabSelected.emit(selectedTab);
+
+    // Se for uma aba dinâmica, recarregar o componente correspondente
+    if (selectedTab.isDynamicTab && this.dynamicContainer) {
+      this.dynamicContainer.clear(); // Remove o componente anterior
+      this.dynamicLoader.loadComponent(selectedTab.componentName, this.dynamicContainer, selectedTab);
+    }
+
     this.scrollView();
+    this.cdr.detectChanges();
   }
 
   closeTab(tab: TabComponent, fromTabButton = false): void {
@@ -106,14 +121,9 @@ export class TabsFullComponent implements AfterViewInit, OnDestroy {
     const index = tabsArray.findIndex((t) => t.code === tab.code);
     if (index === -1) return;
 
-    if (tab.active) {
-      const newIndex = index > 0 ? index - 1 : (tabsArray.length > 1 ? index + 1 : -1);
-      if (newIndex !== -1) {
-        this.selectTab(tabsArray[newIndex]);
-      }
-    }
+    const isClosingActiveTab = tab.active;
 
-    // Se for uma aba dinâmica, remover corretamente do contêiner
+    // Se for uma aba dinâmica, removê-la corretamente do contêiner
     if (tab.isDynamicTab) {
       const dynamicIndex = this.cloneDynamicInstance.findIndex((t) => t.code === tab.code);
       if (dynamicIndex !== -1) {
@@ -127,8 +137,12 @@ export class TabsFullComponent implements AfterViewInit, OnDestroy {
 
     // Se não houver mais abas, limpar o contêiner dinâmico
     if (tabsArray.length === 0) {
-      this.dynamicTabPlaceholder.viewContainer.clear();
+      this.dynamicContainer.clear();
       this.cloneDynamicInstance = [];
+    } else if (isClosingActiveTab) {
+      // Se a aba fechada era ativa, ativar a aba anterior ou a próxima
+      const newActiveIndex = index > 0 ? index - 1 : 0;
+      this.selectTab(tabsArray[newActiveIndex]);
     }
 
     this.repairTabs();
@@ -166,22 +180,29 @@ export class TabsFullComponent implements AfterViewInit, OnDestroy {
     this.cdr.detectChanges();
   }
 
-  addNewTab(tabConfig: any, template: TemplateRef<any>): void {
+  addNewTab(tabConfig: TabConfig, componentName: string): void {
     setTimeout(() => {
-      if (!this.dynamicTabPlaceholder?.viewContainer) {
-        console.error('Erro: dynamicTabPlaceholder ainda não está disponível.');
+      if (!this.dynamicContainer) {
+        console.error('Erro: dynamicContainer não está disponível.');
         return;
       }
 
-      const componentRef = this.dynamicTabPlaceholder.viewContainer.createComponent(TabComponent);
-      Object.assign(componentRef.instance, tabConfig);
-      componentRef.instance.template = template;
+      // Criar o componente dinamicamente
+      const componentRef = this.dynamicLoader.loadComponent(componentName, this.dynamicContainer, tabConfig);
+
+      if (componentRef) {
+        console.error(`Componente ${componentName} carregado com sucesso.`);
+      }
+
+      // Definir nome do componente dentro da aba para referência futura
+      componentRef.instance.componentName = componentName;
       componentRef.instance.isDynamicTab = true;
+
       this.cloneDynamicInstance.push(componentRef.instance);
 
       const updatedTabs = [...this.tabs.toArray(), componentRef.instance];
 
-      // Tornar a nova aba ativa
+      // Ativar a aba recém-criada
       updatedTabs.forEach((tab) => (tab.active = false));
       componentRef.instance.active = true;
 

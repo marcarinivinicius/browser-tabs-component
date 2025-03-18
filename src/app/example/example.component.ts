@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import {CommonModule} from '@angular/common';
 import {
   ChangeDetectorRef,
   Component,
@@ -8,12 +8,12 @@ import {
   TemplateRef,
   AfterViewInit,
 } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { TestComponent } from './test/test.component';
-import { TabsFullComponent } from '../components/tabs/tabs-full.component';
-import { TabComponent } from '../components/tabs/components/tab/tab.component';
-import { TabConfig } from '../components/tabs/models/tab-config';
+import {MatButtonModule} from '@angular/material/button';
+import {MatCardModule} from '@angular/material/card';
+import {TestComponent} from './test/test.component';
+import {TabsFullComponent} from '../components/tabs/tabs-full.component';
+import {TabComponent} from '../components/tabs/components/tab/tab.component';
+import {TabConfig} from '../components/tabs/models/tab-config';
 import {FormsModule} from "@angular/forms";
 
 @Component({
@@ -31,12 +31,13 @@ import {FormsModule} from "@angular/forms";
   ],
 })
 export class ExampleComponent implements AfterViewInit {
-  @ViewChild(TabsFullComponent, { static: false }) tabsFullComponent!: TabsFullComponent;
-  @ViewChild('newTab', { static: false }) newTabTemplate!: TemplateRef<any>;
+  @ViewChild(TabsFullComponent, {static: false}) tabsFullComponent!: TabsFullComponent;
+  @ViewChild('newTab', {static: false}) newTabTemplate!: TemplateRef<any>;
 
   @ViewChildren(TestComponent) protected tabs!: QueryList<TestComponent>;
 
-  constructor(private cdr: ChangeDetectorRef) {}
+  constructor(private cdr: ChangeDetectorRef) {
+  }
 
   ngAfterViewInit(): void {
     this.cdr.detectChanges(); // Garante que os elementos foram renderizados antes de usá-los.
@@ -46,7 +47,7 @@ export class ExampleComponent implements AfterViewInit {
     return 'dy-' + Math.random().toString(36).substring(10);
   }
 
-  protected newDynamicTab(): void {
+  protected newDynamicTab(component: string, titleComponent?: string): void {
     if (!this.tabsFullComponent || !this.newTabTemplate) {
       console.error('TabsFullComponent ou newTabTemplate ainda não estão disponíveis.');
       return;
@@ -57,10 +58,10 @@ export class ExampleComponent implements AfterViewInit {
       tabTitle: title,
       closeable: true,
       code: title,
-      dataContext: { tabTitle: title, code: title }, // Mantém os dados estruturados
+      dataContext: {tabTitle: title, code: title}, // Mantém os dados estruturados
     };
 
-    this.tabsFullComponent.addNewTab(tabConfig, this.newTabTemplate);
+    this.tabsFullComponent.addNewTab(tabConfig, component);
   }
 
   closeTabSelected(tab: TabComponent): void {
@@ -71,6 +72,6 @@ export class ExampleComponent implements AfterViewInit {
   }
 
   tabSelected(tab: TabComponent): void {
-    console.log('Tab Selecionada:', tab);
+
   }
 }
