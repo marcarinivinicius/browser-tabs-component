@@ -1,6 +1,6 @@
 ﻿import { ComponentRef, Injectable, Injector, Type, ViewContainerRef } from '@angular/core';
-import { TestComponent } from '../example/test/test.component';
-import { Test1Component } from '../example/test1/test1.component';
+import {TestComponent} from "../../../example/test/test.component";
+import {Test1Component} from "../../../example/test1/test1.component";
 
 @Injectable({
     providedIn: 'root',
