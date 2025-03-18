@@ -142,9 +142,16 @@ export class TabsFullComponent implements AfterViewInit, OnDestroy {
   }
 
   protected drop(event: CdkDragDrop<TabComponent[]>): void {
-    moveItemInArray(this.tabs.toArray(), event.previousIndex, event.currentIndex);
-    this.tabs.reset(this.tabs.toArray());
-    this.repairTabs();
+    const tabsArray = this.tabs.toArray();
+
+    if (event.previousIndex !== event.currentIndex) {
+      moveItemInArray(tabsArray, event.previousIndex, event.currentIndex);
+
+      // Atualiza a lista de abas com a nova ordem
+      this.tabs.reset(tabsArray);
+      this.repairTabs();
+      this.cdr.detectChanges();
+    }
   }
 
   private repairTabs(): void {
