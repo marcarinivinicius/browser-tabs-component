@@ -1,7 +1,3 @@
-<!--<button (click)="newDynamicTab('Test1Component', 'Teste1')">Abrir Test1Component</button>-->
-<!--<button (click)="newDynamicTab('TestComponent', 'Teste')">Abrir TestComponent</button>-->
-
-
 <section class="gris-background">
   <app-tabs-full
     (tabSelected)="tabSelected($event)"
@@ -21,7 +17,8 @@
 
 <ng-template #newTab let-data="data">
   <app-test [(testTitle)]="data.tabTitle" [componentCode]="data.code">
-    <mat-card style="height: 300px"><input type="text" /></mat-card>
+    <mat-card style="height: 300px">
+      <input type="text" [(ngModel)]="data.tabTitle" />
+    </mat-card>
   </app-test>
 </ng-template>
-

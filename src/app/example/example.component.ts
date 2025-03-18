@@ -2,10 +2,11 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectorRef,
   Component,
-  Input,
-  QueryList,
   ViewChild,
   ViewChildren,
+  QueryList,
+  TemplateRef,
+  AfterViewInit,
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -13,6 +14,7 @@ import { TestComponent } from './test/test.component';
 import { TabsFullComponent } from '../components/tabs/tabs-full.component';
 import { TabComponent } from '../components/tabs/components/tab/tab.component';
 import { TabConfig } from '../components/tabs/models/tab-config';
+import {FormsModule} from "@angular/forms";
 
 @Component({
   selector: 'app-example',
@@ -25,44 +27,50 @@ import { TabConfig } from '../components/tabs/models/tab-config';
     MatButtonModule,
     TabsFullComponent,
     TestComponent,
+    FormsModule,
   ],
 })
-export class ExampleComponent {
-  @ViewChild(TabsFullComponent)
-  tabsFullComponent: TabsFullComponent;
-  @ViewChild('newTab')
-  newTabTemplate: any;
-  
-  @ViewChildren(TestComponent)
-  protected tabs: QueryList<TestComponent>;
+export class ExampleComponent implements AfterViewInit {
+  @ViewChild(TabsFullComponent, { static: false }) tabsFullComponent!: TabsFullComponent;
+  @ViewChild('newTab', { static: false }) newTabTemplate!: TemplateRef<any>;
+
+  @ViewChildren(TestComponent) protected tabs!: QueryList<TestComponent>;
 
   constructor(private cdr: ChangeDetectorRef) {}
 
-  private get randomTitle() {
+  ngAfterViewInit(): void {
+    this.cdr.detectChanges(); // Garante que os elementos foram renderizados antes de usá-los.
+  }
+
+  private get randomTitle(): string {
     return 'dy-' + Math.random().toString(36).substring(10);
   }
 
   protected newDynamicTab(): void {
+    if (!this.tabsFullComponent || !this.newTabTemplate) {
+      console.error('TabsFullComponent ou newTabTemplate ainda não estão disponíveis.');
+      return;
+    }
+
     const title = this.randomTitle;
     const tabConfig: TabConfig = {
       tabTitle: title,
       closeable: true,
       code: title,
-      dataContext: title,
+      dataContext: { tabTitle: title, code: title }, // Mantém os dados estruturados
     };
-    this.tabsFullComponent?.newDynamicTab(
-      tabConfig,
-      this.newTabTemplate,
-      tabConfig
-    );
+
+    this.tabsFullComponent.addNewTab(tabConfig, this.newTabTemplate);
   }
 
-  closeTabSelected(tab: TabComponent) {
-    this.tabsFullComponent.closeTab(tab);
-    this.cdr.detectChanges();
+  closeTabSelected(tab: TabComponent): void {
+    if (this.tabsFullComponent) {
+      this.tabsFullComponent.closeTab(tab);
+      this.cdr.detectChanges();
+    }
   }
 
-  tabSelected(tab: TabComponent) {
-    console.log('tabSelected', tab);
+  tabSelected(tab: TabComponent): void {
+    console.log('Tab Selecionada:', tab);
   }
 }
